@@ -150,7 +150,7 @@ def formatBasicStatblock(statBlock):
 ###################################
 # INT [ {0:^2} ]  REF [ {1:^2} / {1:^2} ]  TECH [ {2:^2} ]  COOL [ {3:^2} ]
 # ATTR [ {4:^2} ]  LUCK [ {5:^2} ]  MA [ {6:^2} ]  BODY [ {7:^2} ]
-# EMP [ {8:^2} / {8:^2} ]
+# EMP [ {8:^2} / {8:^2} ]  RUN [ {9:2} ]  LEAP [ {10:^3.1f} ]  LIFT [ {11:^3} ]
 ###################################
 """.format(
         statBlock.intelligence,
@@ -162,4 +162,7 @@ def formatBasicStatblock(statBlock):
         statBlock.movementAllowance,
         statBlock.body,
         statBlock.empathy,
+        statBlock.movementAllowance * 3,
+        (statBlock.movementAllowance * 3) / 4,
+        statBlock.body * 40,
     )
