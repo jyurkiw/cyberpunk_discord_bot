@@ -5,6 +5,20 @@ from CP2020_Discord_Bot_API.api.stats import StatBlock
 from CP2020_Discord_Bot_API.api.util import CPDataHandler
 
 
+def AddLineBreak(e):
+    e.add_field(name="\u200B", value="\u200B", inline=False)
+
+
+def AddWastableStats(e, sb):
+    for stat in sb.stats:
+        e.add_field(name=stat.name, value=stat.value, inline=True)
+
+
+def AddTableResults(e, results):
+    for result in results:
+        e.add_field(name=result.name, value=result.value, inline=True)
+
+
 class GenerateWastableStatsCommand(BaseSyncCommand):
     def __init__(self):
         super().__init__("gen-w-stats", "embed")
@@ -18,16 +32,33 @@ class GenerateWastableStatsCommand(BaseSyncCommand):
             ),
             color=0xDD0000,
         )
-        # response.add_field(name="Field1", value="This is field 1", inline=False)
-        for stat in sb.stats:
-            response.add_field(name=stat.name, value=stat.value, inline=True)
+
+        AddWastableStats(response, sb)
 
         return response
 
 
 class GenerateWastableCommand(BaseSyncCommand):
-    def __init__(self):
+    def __init__(self, tableRoller):
         super().__init__("gen-w", "embed")
+        self.tableRoller = tableRoller
 
     def runCommand(self, arguments, message=None):
-        pass
+        sb = StatBlock().generateRandom()
+        response = discord.Embed(
+            title="Random Wastable",
+            description="Random Wastable with {0} stat points.".format(
+                sb.getStatTotal()
+            ),
+            color=0xDD0000,
+        )
+
+        AddTableResults(response, self.tableRoller.motivations.runProcess())
+        AddLineBreak(response)
+        AddWastableStats(response, sb)
+        AddLineBreak(response)
+        AddTableResults(
+            response, self.tableRoller.originsAndPersonalStyle.runProcess()
+        )
+
+        return response

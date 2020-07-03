@@ -1,3 +1,8 @@
+# Data directory
+data/*
+!data/template.json
+!data/tables_config_template.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

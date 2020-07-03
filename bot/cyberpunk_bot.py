@@ -11,24 +11,15 @@ class CyberpunkBotClient(discord.Client):
     async def on_message(self, message):
         """Overloaded on_message event. Executes registered commands.
         """
-        print(message.content, flush=True)
         if not message.content.startswith(self.delimiter):
-            print("Message did not start with delimiter", flush=True)
             return
 
-        print("getting command...", flush=True)
         command = getCommand(message)
-        print("command: " + command, flush=True)
 
         if command not in self.commandRegistry:
-            print("command not found", flush=True)
             return
 
         arguments = getCommandArguments(message)
-
-        if arguments:
-            print("args: " + arguments, flush=True)
-
         commandObject = self.commandRegistry[command]
 
         if commandObject.isAsync:
