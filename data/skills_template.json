@@ -1,0 +1,30 @@
+// Master Skill List template
+[
+  {"stat":"stat name", "skill": "skill name"},
+]
+
+// Career Skill List template
+{
+  "roles": ["role1", "role2", "etc..."],
+  "career skills": {
+    "role1":[
+      {"stat":"stat name", "skill": "skill name"},
+      // or
+      {"stat":"stat name", "skill": ["skill1", "skill2", "etc..."], "select": n},
+    ]
+  }
+}
+
+// The roles under "career skills" must also be present under "roles".
+// The career skill entry with multiple skill names and a "select" property
+// is for "choose n of the following" entries, like for the techie role.
+// n must be less than or equal to the number of skill choices.
+
+// The master skill list gets fed to the SkillRoller as masterSkills as a
+// list of dicts.
+
+// The "career skills" get fed to the SkillRoller as careerSkills as a dict
+// with lists of dicts.
+
+// The "roles" get fed to the SkillRoller as a list of strings with a 1:1
+// mapping in "career skills".

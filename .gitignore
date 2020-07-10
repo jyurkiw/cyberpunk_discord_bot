@@ -2,6 +2,7 @@
 data/*
 !data/template.json
 !data/tables_config_template.json
+!data/skills_template.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
