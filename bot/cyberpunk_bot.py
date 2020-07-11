@@ -28,9 +28,17 @@ class CyberpunkBotClient(discord.Client):
             result = commandObject.runCommand(arguments)
 
         if commandObject.responseType == "text":
-            await message.channel.send(result)
+            if isinstance(result, list):
+                for r in result:
+                    await message.channel.send(r)
+            else:
+                await message.channel.send(result)
         elif commandObject.responseType == "embed":
-            await message.channel.send(embed=result)
+            if isinstance(result, list):
+                for r in result:
+                    await message.channel.send(embed=r)
+            else:
+                await message.channel.send(embed=result)
 
     def registerCommandObject(self, commandObject):
         """Register a command object with this bot.

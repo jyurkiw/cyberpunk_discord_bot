@@ -19,6 +19,24 @@ def AddTableResults(e, results):
         e.add_field(name=result.name, value=result.value, inline=True)
 
 
+def AddSkills(e, roleName, skills):
+    valueFormat = (
+        "{0:>" + str(max([len(skill.value) for skill in skills])) + "} +{1}"
+    )
+    skillTable = "```"
+    skillTable += "\n".join(
+        [valueFormat.format(skill.value, skill.count) for skill in skills]
+    )
+    skillTable += "```"
+
+    e.add_field(
+        name="Role: {0}".format(roleName), value=skillTable, inline=False
+    )
+
+    # for skill in skills:
+    #     e.add_field(name=skill.value, value=skill.count, inline=False)
+
+
 class GenerateWastableStatsCommand(BaseSyncCommand):
     def __init__(self):
         super().__init__("gen-w-stats", "embed")
@@ -39,12 +57,15 @@ class GenerateWastableStatsCommand(BaseSyncCommand):
 
 
 class GenerateWastableCommand(BaseSyncCommand):
-    def __init__(self, tableRoller):
+    def __init__(self, tableRoller, skillRoller):
         super().__init__("gen-w", "embed")
         self.tableRoller = tableRoller
+        self.skillRoller = skillRoller
 
     def runCommand(self, arguments, message=None):
         sb = StatBlock().generateRandom()
+        stats = sb.toDict()
+        responses = list()
         response = discord.Embed(
             title="Random Wastable",
             description="Random Wastable with {0} stat points.".format(
@@ -60,5 +81,15 @@ class GenerateWastableCommand(BaseSyncCommand):
         AddTableResults(
             response, self.tableRoller.originsAndPersonalStyle.runProcess()
         )
+        responses.append(response)
+        response = discord.Embed(color=0xDD0000)
 
-        return response
+        role = self.skillRoller.getRandomRole()
+        AddSkills(
+            response,
+            role,
+            self.skillRoller.roll(role, stats["int"] + stats["ref"]),
+        )
+        responses.append(response)
+
+        return responses
