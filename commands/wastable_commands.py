@@ -58,7 +58,7 @@ def AddWeapons(e, weaponList):
     weaponColWidths = defaultdict(lambda: 0)
     wtuple = namedtuple("wtuple", ["width", "key"])
     for t in [wtuple(width=len(k), key=k) for w in weaponList for k in w] + [
-        wtuple(width=max(widths[k], len(str(w[k]))), key=k)
+        wtuple(width=max(weaponColWidths[k], len(str(w[k]))), key=k)
         for w in weaponList
         for k in w
     ]:
