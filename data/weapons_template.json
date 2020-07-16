@@ -1,0 +1,17 @@
+[
+    {
+      "category": "Light Pistol",
+      "type": "P",
+      "wa": -3,
+      "concealability": "P",
+      "availability": "E",
+      "damage": "1d6",
+      "ammo_type": "5mm",
+      "shots": 8,
+      "rate_of_fire": 2,
+      "reliability": "ST",
+      "range": "50m",
+      "cost": "75eb",
+      "name": "SomeGun XD 33"
+    }
+]

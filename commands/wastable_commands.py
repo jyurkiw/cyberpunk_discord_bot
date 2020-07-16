@@ -33,8 +33,9 @@ def AddSkills(e, roleName, skills):
         name="Role: {0}".format(roleName), value=skillTable, inline=False
     )
 
-    # for skill in skills:
-    #     e.add_field(name=skill.value, value=skill.count, inline=False)
+
+def AddWeapons(e, roleName):
+    pass
 
 
 class GenerateWastableStatsCommand(BaseSyncCommand):
@@ -57,10 +58,11 @@ class GenerateWastableStatsCommand(BaseSyncCommand):
 
 
 class GenerateWastableCommand(BaseSyncCommand):
-    def __init__(self, tableRoller, skillRoller):
+    def __init__(self, tableRoller, skillRoller, weaponHandler):
         super().__init__("gen-w", "embed")
         self.tableRoller = tableRoller
         self.skillRoller = skillRoller
+        self.weaponHandler = weaponHandler
 
     def runCommand(self, arguments, message=None):
         sb = StatBlock().generateRandom()
@@ -92,4 +94,12 @@ class GenerateWastableCommand(BaseSyncCommand):
         )
         responses.append(response)
 
+        response = discord.Embed(color=0xDD0000)
+        AddWeapons(response, self.randomWeapon(role))
+
+        responses.append(response)
+
         return responses
+
+    def randomWeapon(self, role):
+        pass
