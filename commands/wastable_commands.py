@@ -9,6 +9,7 @@ from random import randint
 from .base_command import BaseSyncCommand
 from CP2020_Discord_Bot_API.api.stats import StatBlock
 from CP2020_Discord_Bot_API.api.util import CPDataHandler
+from CP2020_Discord_Bot_API.api.equipment.weapons import WeaponsHandler
 
 
 def AddLineBreak(e):
@@ -94,11 +95,11 @@ class GenerateWastableStatsCommand(BaseSyncCommand):
 
 
 class GenerateWastableCommand(BaseSyncCommand):
-    def __init__(self, tableRoller, skillRoller, weaponHandler):
+    def __init__(self, tableRoller, skillRoller):
         super().__init__("gen-w", "embed")
         self.tableRoller = tableRoller
         self.skillRoller = skillRoller
-        self.weaponHandler = weaponHandler
+        self.weaponHandler = WeaponsHandler()
 
     def runCommand(self, arguments, message=None):
         sb = StatBlock().generateRandom()
