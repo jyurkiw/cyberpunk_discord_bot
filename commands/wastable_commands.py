@@ -1,5 +1,11 @@
 import discord
 
+from collections import defaultdict
+from collections import namedtuple
+
+from random import choice
+from random import randint
+
 from .base_command import BaseSyncCommand
 from CP2020_Discord_Bot_API.api.stats import StatBlock
 from CP2020_Discord_Bot_API.api.util import CPDataHandler
@@ -34,8 +40,38 @@ def AddSkills(e, roleName, skills):
     )
 
 
-def AddWeapons(e, roleName):
-    pass
+def AddWeapons(e, weaponList):
+    cols = [
+        "Name",
+        "Type",
+        "WA",
+        "Con.",
+        "Avail.",
+        "Damage/Ammo",
+        "#Shots",
+        "ROF",
+        "Rel.",
+        "Range",
+    ]
+
+    weaponColWidths = defaultdict(lambda: 0)
+    wtuple = namedtuple("wtuple", ["width", "key"])
+    for t in [wtuple(width=len(k), key=k) for w in weaponList for k in w] + [
+        wtuple(width=max(widths[k], len(str(w[k]))), key=k)
+        for w in weaponList
+        for k in w
+    ]:
+        weaponColWidths[t.key] = t.width
+
+    weaponColFormat = "{{name:^{name}}}\t{{type:^{type}}}\t{{wa:^{wa}}}\t{{concealability:^{concealability}}}\t{{availability:^{availability}}}\t{{damage}}\({{ammo_type}}\)\t{{shots:^{shots}}}\t{{rate_of_fire:^{rate_of_fire}}}\t{{reliability:^{reliability}}}\t{{range:^{range}}}".format(
+        **weaponColWidths
+    )
+
+    weaponsTable = "```"
+    weaponsTable += "\n".join([weaponColFormat.format(**w) for w in weaponList])
+    weaponsTable += "```"
+
+    e.add_field(name="Weapons", value=weaponsTable, inline=False)
 
 
 class GenerateWastableStatsCommand(BaseSyncCommand):
@@ -95,11 +131,15 @@ class GenerateWastableCommand(BaseSyncCommand):
         responses.append(response)
 
         response = discord.Embed(color=0xDD0000)
-        AddWeapons(response, self.randomWeapon(role))
+        AddWeapons(
+            response, [self.randomWeapon() for n in range(0, randint(1, 3))]
+        )
 
         responses.append(response)
 
         return responses
 
-    def randomWeapon(self, role):
-        pass
+    def randomWeapon(self):
+        return self.weaponHandler.getRandomWeapon(
+            choice(self.weaponHandler.getWeaponCategories())
+        )
