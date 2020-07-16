@@ -11,6 +11,14 @@ from CP2020_Discord_Bot_API.api.stats import StatBlock
 from CP2020_Discord_Bot_API.api.util import CPDataHandler
 from CP2020_Discord_Bot_API.api.equipment.weapons import WeaponsHandler
 
+import pprint
+import sys
+
+
+def pp(s):
+    pprint.pprint(s)
+    sys.stdout.flush()
+
 
 def AddLineBreak(e):
     e.add_field(name="\u200B", value="\u200B", inline=False)
@@ -42,6 +50,7 @@ def AddSkills(e, roleName, skills):
 
 
 def AddWeapons(e, weaponList):
+    pp(weaponList)
     cols = [
         "Name",
         "Type",
@@ -55,8 +64,8 @@ def AddWeapons(e, weaponList):
         "Range",
     ]
 
-    weaponColWidths = defaultdict(lambda: 0)
     wtuple = namedtuple("wtuple", ["width", "key"])
+    weaponColWidths = defaultdict(lambda: 0)
     for t in [wtuple(width=len(k), key=k) for w in weaponList for k in w] + [
         wtuple(width=max(weaponColWidths[k], len(str(w[k]))), key=k)
         for w in weaponList
