@@ -45,6 +45,9 @@ class GenerateWastableCommand(BaseSyncCommand):
         self.formatStats(output, sbDict)
         output.write("\n\n")
 
+        self.formatSkills(output, sks)
+        output.write("\n\n")
+
         self.formatWeapons(output, wps)
         output.write("\n\n")
 
@@ -85,6 +88,11 @@ class GenerateWastableCommand(BaseSyncCommand):
                 **stats
             )
         )
+
+    def formatSkills(self, output, skillsList):
+        output.write("Skills:\n")
+        for skill in skillsList:
+            output.write("\t{0} +{1}\n".format(skill.name, skill.score))
 
     def formatLifepath(self, output, lifepath):
         for stepHeading in lifepath:
