@@ -88,10 +88,11 @@ class GenerateWastableCommand(BaseSyncCommand):
         for stepHeading in lifepath:
             output.write(stepHeading + ":\n\t")
             for tableResult in lifepath[stepHeading]:
-                output.write("\t")
-                output.write(tableResult["table_name"] + ": ")
-                output.write(tableResult["value"])
-                output.write("\n")
+                if "module_key" not in tableResult:
+                    output.write("\t")
+                    output.write(tableResult["table_name"] + ": ")
+                    output.write(tableResult["value"])
+                    output.write("\n")
 
     def formatWeapons(self, output, weaponList):
         """
