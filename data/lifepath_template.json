@@ -1,0 +1,8 @@
+// "step" is the step in the lifepath process (Motivations, Family Background, etc)
+// "table_name" is the name of the table (Family Tragedy, etc)
+// "redirect" is the name of the table to go to next.
+// "module_key" is the name of any support module to run instead of rolling.
+[
+    {"step": "", "table_name": "", "value": "", "redirect": [""]},
+    {"step": "", "table_name": "", "module_key": ""}
+]
