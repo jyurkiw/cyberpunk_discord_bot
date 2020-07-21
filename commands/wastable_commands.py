@@ -40,13 +40,13 @@ class GenerateWastableCommand(BaseSyncCommand):
 
         output = StringIO()
         self.formatHeader(output, role=role, cp=sb.getStatTotal())
-        output.write("\n")
+        output.write("\n\n")
 
         self.formatStats(output, sbDict)
-        output.write("\n")
+        output.write("\n\n")
 
         self.formatWeapons(output, wps)
-        output.write("\n")
+        output.write("\n\n")
 
         return output.getvalue()
 
@@ -84,6 +84,15 @@ class GenerateWastableCommand(BaseSyncCommand):
             )
         )
 
+    def formatLifepath(self, output, lifepath):
+        for stepHeading in lifepath:
+            output.write(stepHeading + ":\n\t")
+            for tableResult in lifepath[stepHeading]:
+                output.write("\t")
+                output.write(tableResult["table_name"] + ": ")
+                output.write(tableResult["value"])
+                output.write("\n")
+
     def formatWeapons(self, output, weaponList):
         """
         """
@@ -98,7 +107,7 @@ class GenerateWastableCommand(BaseSyncCommand):
         ]:
             weaponColWidths[t.key] = t.width
 
-        weaponColFormat = "\t{{name:^{name}}}\t{{type:^{type}}}\t{{weapon_accuracy:^{weapon_accuracy}}}\t{{concealability:^{concealability}}}\t{{availability:^{availability}}}\t{{damage}}\({{ammo_type}}\)\t{{shots:^{shots}}}\t{{rate_of_fire:^{rate_of_fire}}}\t{{reliability:^{reliability}}}\t{{range:^{range}}}".format(
+        weaponColFormat = "\t{{name:{name}}}\t{{type:^{type}}}\t{{weapon_accuracy:^{weapon_accuracy}}}\t{{concealability:^{concealability}}}\t{{availability:^{availability}}}\t{{damage}}\({{ammo_type}}\)\t{{shots:^{shots}}}\t{{rate_of_fire:^{rate_of_fire}}}\t{{reliability:^{reliability}}}\t{{range:^{range}}}".format(
             **weaponColWidths
         )
 
