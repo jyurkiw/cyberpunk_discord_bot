@@ -48,6 +48,8 @@ class GenerateWastableCommand(BaseSyncCommand):
         self.formatWeapons(output, wps)
         output.write("\n\n")
 
+        self.formatLifepath(output, lp)
+
         return output.getvalue()
 
     def formatHeader(self, output, handle=None, role=None, cp=0):
@@ -86,7 +88,7 @@ class GenerateWastableCommand(BaseSyncCommand):
 
     def formatLifepath(self, output, lifepath):
         for stepHeading in lifepath:
-            output.write(stepHeading + ":\n\t")
+            output.write(stepHeading + ":\n")
             for tableResult in lifepath[stepHeading]:
                 if "module_key" not in tableResult:
                     output.write("\t")
