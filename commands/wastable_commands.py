@@ -23,7 +23,7 @@ class GenerateWastableCommand(BaseSyncCommand):
         self.skillsRoller = SkillRoller(dbName)
 
     def runCommand(self, arguments, message=None):
-        sb = StatBlock().generateRandom().toDict()
+        sb = StatBlock().generateRandom()
         role, sks = self.skillsRoller.rollRandomRole(
             sb["int"] + sb["ref"], points=40
         )
@@ -33,19 +33,58 @@ class GenerateWastableCommand(BaseSyncCommand):
             for n in range(0, randint(1, 3))
         ]
 
+        sbDict = sb.toDict()
+        self.addCalculatedStats(sbDict)
+
         output = StringIO()
-        self.formatHeader(output, role=role)
+        self.formatHeader(output, role=role, cp=sb.getStatTotal())
+        output.write("\n")
+
+        self.addCalculatedStats()
+        output.write("\n")
+
+        self.formatStats(output, sbDict)
+        output.write("\n")
 
         return output.getvalue()
 
-    def formatHeader(self, output, handle=None, role=None):
+    def formatHeader(self, output, handle=None, role=None, cp=0):
+        """Handle: Not Yet Implemented
+        Role: [random role]
+        """
         if not role:
             raise Exception("Role is required.")
+        if not cp:
+            raise Exception("CPs are required.")
 
         output.write("Handle: Not Yet Implemented\n")
-        output.write("Role: " + role)
+        output.write("Role: " + role + "\tCP: " + str(cp))
+
+    def addCalculatedStats(self, stats):
+        stats["run"] = stats["ma"] * 4
+        stats["leap"] = stats["run"] / 3
+        stats["lift"] = stats["body"] * 40
+
+    def formatStats(self, output, stats):
+        output.write(
+            "INT [{int}]  REF [{ref}/{ref}]  TECH [{tech}]  COOL [{cool}]\n".format(
+                **stats
+            )
+        )
+        output.write(
+            "ATTR [{attr}]  LUCK [{luck}]  MA [{ma}]  BODY [{body}]\n".format(
+                **stats
+            )
+        )
+        output.write(
+            "EMP [{emp}]  RUN [{run}]  LEAP [{leap}]  LIFT [{lift}]".format(
+                **stats
+            )
+        )
 
     def formatWeapons(self, output, weaponList):
+        """
+        """
         wtuple = namedtuple("wtuple", ["width", "key"])
         weaponColWidths = defaultdict(lambda: 0)
         for t in [
