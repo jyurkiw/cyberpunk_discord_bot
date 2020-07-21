@@ -24,17 +24,19 @@ class GenerateWastableCommand(BaseSyncCommand):
 
     def runCommand(self, arguments, message=None):
         sb = StatBlock().generateRandom()
+        sbDict = sb.toDict()
+        self.addCalculatedStats(sbDict)
+
         role, sks = self.skillsRoller.rollRandomRole(
-            sb["int"] + sb["ref"], points=40
+            sbDict["int"] + sbDict["ref"], points=40
         )
+
         lp = self.lifepathRoller.rollLifepath()
+
         wps = [
             self.weaponsRoller.getRandomWeapon()
             for n in range(0, randint(1, 3))
         ]
-
-        sbDict = sb.toDict()
-        self.addCalculatedStats(sbDict)
 
         output = StringIO()
         self.formatHeader(output, role=role, cp=sb.getStatTotal())
