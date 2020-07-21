@@ -8,8 +8,9 @@ from random import randint
 
 from .base_command import BaseSyncCommand
 from CP2020_Discord_Bot_API.api.stats import StatBlock
-from CP2020_Discord_Bot_API.api.util import CPDataHandler
-from CP2020_Discord_Bot_API.api.equipment.weapons import WeaponsHandler
+from CP2020_Discord_Bot_API.api.equipment.weapons import WeaponsRoller
+from CP2020_Discord_Bot_API.api.lifepath import LifepathRoller
+from CP2020_Discord_Bot_API.api.skills import SkillRoller
 
 
 def AddLineBreak(e):
@@ -62,72 +63,25 @@ def AddWeapons(e, weaponList):
     e.add_field(name="Weapons", value=weaponsTable, inline=False)
 
 
-class GenerateWastableStatsCommand(BaseSyncCommand):
-    def __init__(self):
-        super().__init__("gen-w-stats", "embed")
-
-    def runCommand(self, arguments, message=None):
-        sb = StatBlock().generateRandom()
-        response = discord.Embed(
-            title="Wastable Statblock",
-            description="Random wastable with {0} stat points.".format(
-                sb.getStatTotal()
-            ),
-            color=0xDD0000,
-        )
-
-        AddWastableStats(response, sb)
-
-        return response
-
-
 class GenerateWastableCommand(BaseSyncCommand):
     def __init__(self, tableRoller, skillRoller):
-        super().__init__("gen-w", "embed")
-        self.tableRoller = tableRoller
-        self.skillRoller = skillRoller
-        self.weaponHandler = WeaponsHandler()
+        super().__init__("gen-w")
+        self.weaponsRoller = WeaponsRoller()
+        self.lifepathRoller = LifepathRoller()
+        self.skillsRoller = SkillRoller()
 
     def runCommand(self, arguments, message=None):
         sb = StatBlock().generateRandom()
-        stats = sb.toDict()
-        responses = list()
-        response = discord.Embed(
-            title="Random Wastable",
-            description="Random Wastable with {0} stat points.".format(
-                sb.getStatTotal()
-            ),
-            color=0xDD0000,
-        )
+        sk = self.skillsRoller.rollRandomRole(sb["int"] + sb["ref"], points=40)
+        lp = self.lifepathRoller.rollLifepath()
+        wps = [self.randomWeapon() for n in range(0, randint(1, 3))]
 
-        AddTableResults(response, self.tableRoller.motivations.runProcess())
-        AddLineBreak(response)
-        AddWastableStats(response, sb)
-        AddLineBreak(response)
-        AddTableResults(
-            response, self.tableRoller.originsAndPersonalStyle.runProcess()
-        )
-        responses.append(response)
-        response = discord.Embed(color=0xDD0000)
+        # responses.append(response)
 
-        role = self.skillRoller.getRandomRole()
-        AddSkills(
-            response,
-            role,
-            self.skillRoller.roll(role, stats["int"] + stats["ref"]),
-        )
-        responses.append(response)
-
-        response = discord.Embed(color=0xDD0000)
-        AddWeapons(
-            response, [self.randomWeapon() for n in range(0, randint(1, 3))]
-        )
-
-        responses.append(response)
-
-        return responses
+        return "Stuff goes\n\t\t\tHere: ---> <---"
 
     def randomWeapon(self):
-        return self.weaponHandler.getRandomWeapon(
-            choice(self.weaponHandler.getWeaponCategories())
+        # fix this
+        return self.weaponsRoller.getRandomWeapon(
+            choice(self.weaponsRoller.getWeaponCategories())
         )

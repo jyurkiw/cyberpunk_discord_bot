@@ -17,19 +17,10 @@ if __name__ == "__main__":
     token = os.getenv("BOT_TOKEN")
     dataDir = os.getenv("DATA_DIR")
 
-    # Build the table roller
-    tableRoller = getTableRoller(dataDir, "tables_config.json")
-    tableRoller.familyBackground.registerRollModule("Siblings", SiblingsModule)
-
-    # Build the skill roller
-    skillRoller = getSkillRoller(
-        dataDir, "master_skill_list.json", "career_skills.json",
-    )
-
     # Build the bot
     bot = CyberpunkBotClient()
     bot.registerCommandObject(ExitCommand())
     bot.registerCommandObject(GenerateWastableStatsCommand())
-    bot.registerCommandObject(GenerateWastableCommand(tableRoller, skillRoller))
+    bot.registerCommandObject(GenerateWastableCommand())
 
     bot.run(token)
