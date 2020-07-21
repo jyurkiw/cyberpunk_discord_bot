@@ -42,10 +42,10 @@ class GenerateWastableCommand(BaseSyncCommand):
         self.formatHeader(output, role=role, cp=sb.getStatTotal())
         output.write("\n")
 
-        self.addCalculatedStats()
+        self.formatStats(output, sbDict)
         output.write("\n")
 
-        self.formatStats(output, sbDict)
+        self.formatWeapons(output, wps)
         output.write("\n")
 
         return output.getvalue()
@@ -79,7 +79,7 @@ class GenerateWastableCommand(BaseSyncCommand):
             )
         )
         output.write(
-            "EMP [{emp}]  RUN [{run}]  LEAP [{leap}]  LIFT [{lift}]".format(
+            "EMP [{emp}/{emp}]  RUN [{run}]  LEAP [{leap:.1f}]  LIFT [{lift}]".format(
                 **stats
             )
         )
@@ -102,6 +102,7 @@ class GenerateWastableCommand(BaseSyncCommand):
             **weaponColWidths
         )
 
+        output.write("Weapons:\n")
         output.write(
             "\n".join([weaponColFormat.format(**w) for w in weaponList])
         )
