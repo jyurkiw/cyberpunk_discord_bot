@@ -98,11 +98,11 @@ class GenerateWastableCommand(BaseSyncCommand):
         ]:
             weaponColWidths[t.key] = t.width
 
-        weaponColFormat = "{{name:^{name}}}\t{{type:^{type}}}\t{{wa:^{wa}}}\t{{concealability:^{concealability}}}\t{{availability:^{availability}}}\t{{damage}}\({{ammo_type}}\)\t{{shots:^{shots}}}\t{{rate_of_fire:^{rate_of_fire}}}\t{{reliability:^{reliability}}}\t{{range:^{range}}}".format(
+        weaponColFormat = "\t{{name:^{name}}}\t{{type:^{type}}}\t{{weapon_accuracy:^{weapon_accuracy}}}\t{{concealability:^{concealability}}}\t{{availability:^{availability}}}\t{{damage}}\({{ammo_type}}\)\t{{shots:^{shots}}}\t{{rate_of_fire:^{rate_of_fire}}}\t{{reliability:^{reliability}}}\t{{range:^{range}}}".format(
             **weaponColWidths
         )
 
-        output.write("Weapons:\n")
+        output.write("Weapons:\n\t")
         output.write(
             "\n".join([weaponColFormat.format(**w) for w in weaponList])
         )
