@@ -114,7 +114,7 @@ class GenerateWastableCommand(BaseSyncCommand):
             **weaponColWidths
         )
 
-        output.write("Weapons:\n\t")
+        output.write("Weapons:\n")
         output.write(
             "\n".join([weaponColFormat.format(**w) for w in weaponList])
         )
