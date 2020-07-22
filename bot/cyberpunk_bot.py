@@ -11,6 +11,9 @@ class CyberpunkBotClient(discord.Client):
     async def on_message(self, message):
         """Overloaded on_message event. Executes registered commands.
         """
+        if message.content == "!exit":
+            self.close()
+            self.destroy()
         if not message.content.startswith(self.delimiter):
             return
 

@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     # Build the bot
     bot = CyberpunkBotClient()
-    bot.registerCommandObject(ExitCommand())
+    # bot.registerCommandObject(ExitCommand())
     bot.registerCommandObject(GenerateWastableCommand(dbName))
 
     bot.run(token)

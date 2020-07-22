@@ -28,15 +28,6 @@ class ArmorFormatter(object):
         )
 
     @staticmethod
-    def getSpStars(armorList):
-        half = False
-        soft = False
-        for armor in armorList:
-            half = half or armor["half_vs_edged"]
-            soft = soft or armor["soft"]
-        return half, not hard
-
-    @staticmethod
     def getTotalEV(armorList):
         return sum([armor["encumbrance_value"] for armor in armorList])
 
@@ -162,22 +153,16 @@ class GenerateWastableCommand(BaseSyncCommand):
         """Format and write out passed armor data.
         """
         output.write("Armor:\n")
-        armorFormatStr = "\t{{name:{nameWidth}}}{{half}} {{sp}}{{hard}} {{ev}} {{locations}}\n".format(
+        armorFormatStr = "\t{{name:{nameWidth}}}\t\t{{sp}}\t{{ev}}\t{{locations}}\n".format(
             nameWidth=ArmorFormatter.getMaxNameWidth(armorList)
         )
         stars = ArmorFormatter.getSpStars(armorList)
         for armor in armorList:
             output.write(
-                "armorFormatStr".format(
+                armorFormatStr.format(
                     name=armor["name"],
                     sp=armor["stopping_power"],
                     ev=armor["encumbrance_value"],
                     locations=ArmorFormatter.getLocationsString(armor),
-                    half="*" if armor["half_vs_edged"] else "",
-                    hard="**" if not armor["soft"] else "",
                 )
             )
-        if "*" in stars:
-            output.write("* Armor is half SP vs edged weapons.\n")
-        if "**" in stars:
-            output.write("** Armor is hard.\n")
