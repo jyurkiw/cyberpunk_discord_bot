@@ -156,7 +156,6 @@ class GenerateWastableCommand(BaseSyncCommand):
         armorFormatStr = "\t{{name:{nameWidth}}}\t\t{{sp}}\t{{ev}}\t{{locations}}\n".format(
             nameWidth=ArmorFormatter.getMaxNameWidth(armorList)
         )
-        stars = ArmorFormatter.getSpStars(armorList)
         for armor in armorList:
             output.write(
                 armorFormatStr.format(
