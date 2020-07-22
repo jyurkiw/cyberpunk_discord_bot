@@ -10,15 +10,42 @@ from io import StringIO
 
 from .base_command import BaseSyncCommand
 from CP2020_Discord_Bot_API.api.stats import StatBlock
-from CP2020_Discord_Bot_API.api.equipment.weapons import WeaponsRoller
+from CP2020_Discord_Bot_API.api.equipment import WeaponsRoller
+from CP2020_Discord_Bot_API.api.equipment import ArmorRoller
 from CP2020_Discord_Bot_API.api.lifepath import LifepathRoller
 from CP2020_Discord_Bot_API.api.skills import SkillRoller
+
+
+class ArmorFormatter(object):
+    @staticmethod
+    def getMaxNameWidth(armorList):
+        return max([len(armor["name"]) for armor in armorList])
+
+    @staticmethod
+    def getLocationsString(armor):
+        return ",".join(
+            [l for l in ["head", "torso", "arms", "legs"] if armor[l]]
+        )
+
+    @staticmethod
+    def getSpStars(armorList):
+        half = False
+        soft = False
+        for armor in armorList:
+            half = half or armor["half_vs_edged"]
+            soft = soft or armor["soft"]
+        return half, not hard
+
+    @staticmethod
+    def getTotalEV(armorList):
+        return sum([armor["encumbrance_value"] for armor in armorList])
 
 
 class GenerateWastableCommand(BaseSyncCommand):
     def __init__(self, dbName):
         super().__init__("gen-w")
         self.weaponsRoller = WeaponsRoller(dbName)
+        self.armorRoller = ArmorRoller(dbName)
         self.lifepathRoller = LifepathRoller(dbName)
         self.skillsRoller = SkillRoller(dbName)
 
@@ -37,6 +64,7 @@ class GenerateWastableCommand(BaseSyncCommand):
             self.weaponsRoller.getRandomWeapon()
             for n in range(0, randint(1, 3))
         ]
+        amr = self.armorRoller.getRandomArmor()
 
         output = StringIO()
         self.formatHeader(output, role=role, cp=sb.getStatTotal())
@@ -49,6 +77,9 @@ class GenerateWastableCommand(BaseSyncCommand):
         output.write("\n\n")
 
         self.formatWeapons(output, wps)
+        output.write("\n\n")
+
+        self.formatArmor(output, amr)
         output.write("\n\n")
 
         self.formatLifepath(output, lp)
@@ -105,7 +136,7 @@ class GenerateWastableCommand(BaseSyncCommand):
                     output.write("\n")
 
     def formatWeapons(self, output, weaponList):
-        """
+        """Format and write out passed weapon data.
         """
         wtuple = namedtuple("wtuple", ["width", "key"])
         weaponColWidths = defaultdict(lambda: 0)
@@ -126,3 +157,27 @@ class GenerateWastableCommand(BaseSyncCommand):
         output.write(
             "\n".join([weaponColFormat.format(**w) for w in weaponList])
         )
+
+    def formatArmor(self, output, armorList):
+        """Format and write out passed armor data.
+        """
+        output.write("Armor:\n")
+        armorFormatStr = "\t{{name:{nameWidth}}}{{half}} {{sp}}{{hard}} {{ev}} {{locations}}\n".format(
+            nameWidth=ArmorFormatter.getMaxNameWidth(armorList)
+        )
+        stars = ArmorFormatter.getSpStars(armorList)
+        for armor in armorList:
+            output.write(
+                "armorFormatStr".format(
+                    name=armor["name"],
+                    sp=armor["stopping_power"],
+                    ev=armor["encumbrance_value"],
+                    locations=ArmorFormatter.getLocationsString(armor),
+                    half="*" if armor["half_vs_edged"] else "",
+                    hard="**" if not armor["soft"] else "",
+                )
+            )
+        if "*" in stars:
+            output.write("* Armor is half SP vs edged weapons.\n")
+        if "**" in stars:
+            output.write("** Armor is hard.\n")
